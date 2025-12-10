@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <h2>Byl jsi úspěšně odhlášen 😊</h2>
+    <a href="{% url 'login' %}" class="btn btn-success mt-3">Přihlásit se znovu</a>
+</div>
+{% endblock %}

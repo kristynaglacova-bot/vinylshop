@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>O nás</h2>
+
+<p>Naším cílem je nabídnout široký výběr vinylů pro všechny milovníky hudby. Každý vinyl má detailní informace o autorovi, žánrech, popisu a můžete je hodnotit hvězdičkami.</p>
+
+<h3>Kontakt</h3>
+<p>Email: info@vinylshop.cz</p>
+<p>Telefon: +420 778 896 456</p>
+
+<!-- Sociální sítě -->
+<div class="social-icons text-center mt-3">
+  <a href="#" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
+  <a href="#" class="social-icon instagram"><i class="fab fa-instagram"></i></a>
+  <a href="#" class="social-icon spotify"><i class="fab fa-spotify"></i></a>
+</div>
+
+<h3>Adresa</h3>
+<p>Vinyl Shop s.r.o.<br>
+Štepánská 154<br>
+123 45 Bohumín</p>
+
+<!-- Obrázek dole vpravo -->
+<div style="position: relative; min-height: 200px;">
+    <img src="{% static 'vinyl_covers/ok.png' %}" 
+         alt="Vinyl" 
+         style="position: absolute; bottom: 0; right: 0; height:150px;">
+</div>
+
+<style>
+.social-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #eee;
+  color: #333;
+  text-decoration: none;
+  font-size: 24px;
+  transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+  transform: scale(1.2);
+  color: white;
+}
+
+.social-icon.facebook:hover {
+  background-color: #3b5998;
+}
+
+.social-icon.instagram:hover {
+  background-color: #e1306c;
+}
+
+.social-icon.spotify:hover {
+  background-color: #1db954;
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="text-center">
+  <h1 class="mb-4">Vítej ve Vinyl Shopu! 🎶</h1>
+
+  <div class="lead mx-auto" style="max-width: 700px;">
+    <p>Objevuj, nakupuj a prodávej vinylové poklady na jednom místě.</p>
+
+    <p>Nejsme jen e-shop. Jsme také prostor, kde můžeš své vlastní desky nabídnout dál – jednoduše, 
+    bezpečně a bez zbytečných starostí. Stačí je nahrát, přidat popis a počkat na nového majitele.</p>
+
+    <p>Přidej se do komunity sběratelů, DJů, hudebních nadšenců i těch, kteří teprve objevují kouzlo gramofonu.</p>
+  </div>
+
+  {% if user.is_authenticated %}
+    <p class="mt-4">Jsi přihlášen jako <strong>{{ user.username }}</strong>!</p>
+    <a href="/vinyls/" class="btn btn-success mt-3">Zobrazit vinylové desky</a>
+  {% else %}
+    <p class="mb-4">Přihlaš se a vstup do komunity milovníků hudby.</p>
+    <a href="{% url 'login' %}" class="btn btn-primary">Přihlásit se</a>
+    <a href="{% url 'register' %}" class="btn btn-outline-light">Zaregistrovat se</a>
+  {% endif %}
+</div>
+
+
+{% endblock %}

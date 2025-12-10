@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Tvůj košík</h2>
+
+{% if cart_items %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Vinyl</th>
+      <th>Cena</th>
+      <th>Množství</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cart_items %}
+    <tr>
+  <td>{{ item.vinyl.title }}</td>
+  <td>{{ item.vinyl.price }} Kč</td>
+  <td>{{ item.quantity }}</td>
+  <td>{{ item.subtotal }} Kč</td>
+  <td>
+   <a href="{% url 'remove_from_cart' item.vinyl.id %}" class="btn btn-danger">Odebrat</a>
+   <a href="{% url 'checkout' %}" class="btn btn-success">Přejít k pokladně</a>
+  </td>
+</tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h4>Celkem: {{ total }} Kč</h4>
+{% else %}
+<p>Tvůj košík je zatím prázdný.</p>
+{% endif %}
+{% endblock %}

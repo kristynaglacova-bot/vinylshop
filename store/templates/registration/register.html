@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #bbb;
+    }
+</style>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+
+            <!-- tmavší šedá -->
+            <div class="card shadow rounded-4 p-4" style="background-color:#e0e0e0; color:#000;">
+                <h2 class="text-center mb-4">Registrace</h2>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- USERNAME -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Uživatelské jméno</label>
+                        {{ form.username }}
+                        {{ form.username.errors }}
+                    </div>
+
+                    <!-- EMAIL (pokud ho ve formu máš) -->
+                    {% if form.email %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">E-mail</label>
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+                    {% endif %}
+
+                    <!-- PASSWORD -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Heslo</label>
+                        {{ form.password1 }}
+                        {{ form.password1.errors }}
+                    </div>
+
+                    <!-- PASSWORD CONFIRM -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Potvrzení hesla</label>
+                        {{ form.password2 }}
+                        {{ form.password2.errors }}
+                    </div>
+
+                    <!-- světle modré tlačítko -->
+                    <button type="submit" class="btn w-100 py-2" style="background:#7dcfff; color:#000;">
+                        Vytvořit účet
+                    </button>
+                </form>
+
+                <p class="text-center mt-3 mb-0">
+                    Už máš účet?
+                    <a href="{% url 'login' %}" class="fw-semibold" style="color:#0d6efd;">
+                        Přihlásit se
+                    </a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

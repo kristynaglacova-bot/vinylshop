@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #bbb;
+  }
+
+  textarea {
+    min-height: 120px;
+  }
+
+  input[type="file"] {
+    padding: 6px;
+    background-color: #f1f1f1;
+  }
+</style>
+
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+
+    <div class="card p-4 shadow-sm">
+      <h2 class="mb-4 text-center">
+        Upravit vinyl<br>
+        <small class="text-muted">{{ vinyl.title }}</small>
+      </h2>
+
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <div class="d-grid mt-3">
+          <button type="submit" class="btn btn-primary">
+            💾 Uložit změny
+          </button>
+        </div>
+      </form>
+
+      <a href="{% url 'vinyl_list' %}" class="btn btn-link mt-3">
+        ← Zpět na seznam vinylů
+      </a>
+
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

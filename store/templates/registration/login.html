@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container text-center">
+  <h2 class="mb-3">Přihlášení do VinylVerse</h2>
+  <form method="post" class="d-inline-block text-start" style="max-width:400px">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary w-100">Přihlásit</button>
+  </form>
+  <p class="mt-3">Nemáš účet? <a href="/accounts/register.html/">Zaregistruj se</a></p>
+</div>
+{% endblock %}
+
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Přihlášení</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: #222;
+            padding: 30px;
+            width: 350px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: none;
+        }
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: #ffae00;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .link {
+            margin-top: 15px;
+            text-align: center;
+            display: block;
+            color: #ffae00;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Přihlášení</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit">Přihlásit</button>
+        </form>
+
+        <a class="link" href="{% url 'register' %}">Ještě nemáš účet? Registrace</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  body {
+    background-image: url("{% static 'vinyl_covers/sign.png' %}");
+    background-repeat: repeat;
+    background-size: auto;
+    background-position: top left;
+
+
+     .section-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+
+  color: #111;
+  background: #ffffffcc;
+  padding: 14px 30px;
+  border-radius: 14px;
+
+  display: inline-block;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+  }
+</style>
+
+<h2 class="mb-4 section-title">Seznam vinylů</h2>
+
+
+<div class="mb-4">
+  <a href="{% url 'add_vinyl' %}" class="btn btn-primary">
+      Přidat nový vinyl
+  </a>
+</div>
+
+<form method="GET" class="row g-2 mb-4 align-items-end">
+
+    <div class="col-md-4">
+        <input
+            type="text"
+            name="q"
+            class="form-control"
+            placeholder="Hledat vinyl..."
+            value="{{ query }}"
+        >
+    </div>
+
+    <div class="col-md-4">
+        <select name="sort" class="form-select">
+            <option value="">Řadit podle</option>
+            <option value="price_asc" {% if sort == "price_asc" %}selected{% endif %}>
+                Cena: nejlevnější
+            </option>
+            <option value="price_desc" {% if sort == "price_desc" %}selected{% endif %}>
+                Cena: nejdražší
+            </option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">
+            Filtrovat
+        </button>
+    </div>
+
+</form>
+
+
+<div class="row">
+  {% for vinyl in vinyls %}
+    <div class="col-md-4 mb-4">
+      <div class="card bg-light text-dark h-100 shadow-sm">
+
+        <!-- OBRÁZEK + DETAIL -->
+        <a href="{% url 'vinyl_detail' vinyl.pk %}" class="text-decoration-none">
+          {% if vinyl.cover_image %}
+            <img src="{{ vinyl.cover_image.url }}" class="card-img-top" alt="{{ vinyl.title }}">
+          {% else %}
+            <img src="{% static 'images/default_vinyl.jpg' %}" class="card-img-top" alt="default vinyl">
+          {% endif %}
+        </a>
+
+        <div class="card-body d-flex flex-column">
+
+          <!-- TITUL -->
+          <h5 class="card-title">
+            <a href="{% url 'vinyl_detail' vinyl.pk %}" class="text-decoration-none text-dark">
+              {{ vinyl.title }}
+            </a>
+          </h5>
+
+          <p class="card-text"><strong>Autor:</strong> {{ vinyl.artist }}</p>
+
+          <!-- HODNOCENÍ -->
+          <p class="mb-1">{{ vinyl.ratings.count }} hodnocení</p>
+          <p>
+            {% for i in "12345" %}
+              {% if forloop.counter <= vinyl.avg_rating %}
+                ⭐
+              {% else %}
+                ☆
+              {% endif %}
+            {% endfor %}
+          </p>
+
+          <p class="card-text mt-2"><strong>Cena:</strong> {{ vinyl.price }} Kč</p>
+
+          {% if user.is_authenticated %}
+            <form action="{% url 'add_rating' vinyl.pk %}" method="post" class="mb-3">
+              {% csrf_token %}
+              <label class="form-label">Hodnocení:</label>
+              <select name="stars" class="form-select form-select-sm">
+                <option value="1">1 ⭐</option>
+                <option value="2">2 ⭐⭐</option>
+                <option value="3">3 ⭐⭐⭐</option>
+                <option value="4">4 ⭐⭐⭐⭐</option>
+                <option value="5">5 ⭐⭐⭐⭐⭐</option>
+              </select>
+              <button type="submit" class="btn btn-warning btn-sm mt-2">
+                Hodnotit
+              </button>
+            </form>
+          {% else %}
+            <p class="text-muted mt-2">Pro hodnocení se musíš přihlásit.</p>
+          {% endif %}
+
+          <!-- SPODNÍ TLAČÍTKA -->
+          <div class="mt-auto">
+            <a href="{% url 'edit_vinyl' vinyl.pk %}"
+               class="btn btn-primary btn-sm w-100 mb-2">
+              ✏️ Edit
+            </a>
+
+            <form action="{% url 'add_to_cart' vinyl.pk %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-success w-100">
+                🛒 Koupit
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>Žádné vinyly nebyly nalezeny.</p>
+  {% endfor %}
+</div>
+
+<form method="get" class="mt-4">
+  {% if query %}
+    <input type="hidden" name="q" value="{{ query }}">
+  {% endif %}
+  <select name="sort" class="form-select w-auto d-inline" onchange="this.form.submit()">
+    <option value="">Řadit podle</option>
+    <option value="title_asc" {% if sort == "title_asc" %}selected{% endif %}>Název A–Z</option>
+    <option value="title_desc" {% if sort == "title_desc" %}selected{% endif %}>Název Z–A</option>
+    <option value="price_asc" {% if sort == "price_asc" %}selected{% endif %}>Cena ↑</option>
+    <option value="price_desc" {% if sort == "price_desc" %}selected{% endif %}>Cena ↓</option>
+  </select>
+</form>
+
+{% endblock %}
