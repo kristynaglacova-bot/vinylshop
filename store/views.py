@@ -7,6 +7,9 @@ from .models import Vinyl, Rating
 from .forms import VinylForm, RatingForm
 from django.db.models import Avg
 from .models import Order
+from .models import SpotifyNews
+from .models import ConcertReminder
+from .forms import ConcertReminderForm
 
 
 
@@ -292,3 +295,93 @@ def cart_view(request):
     cart_items = [] 
     return render(request, 'store/cart.html', {'cart_items': cart_items})
 
+#Spotify news
+@login_required(login_url='login')
+def spotify_news_view(request):
+    sort = request.GET.get('sort', '-release_date')  
+    valid_sorts = ['artist_name', 'song_name', 'release_date', '-release_date']
+   
+    if sort not in valid_sorts:
+        sort = '-release_date'
+    
+    # Seřazení podle parametru
+    news_list = SpotifyNews.objects.all().order_by(sort)
+
+    for news in news_list:
+        if news.spotify_link:
+            news.embed_link = news.spotify_link.replace('track/', 'embed/track/')
+        else:
+            news.embed_link = None
+
+    return render(request, 'spotify_news.html', {'news_list': news_list, 'current_sort': sort})
+
+#Oblibené songy
+
+@login_required
+def toggle_favorite(request, news_id):
+    news = get_object_or_404(SpotifyNews, id=news_id)
+    user = request.user
+
+    if user in news.favorited_by.all():
+        news.favorited_by.remove(user)
+    else:
+        news.favorited_by.add(user)
+
+    return redirect('spotify_news') 
+
+
+@login_required
+def my_profile(request):
+    favorites = request.user.favorite_tracks.all().order_by('-release_date')
+
+
+    for news in favorites:
+        if news.spotify_link:
+            news.embed_link = news.spotify_link.replace('track/', 'embed/track/')
+        else:
+            news.embed_link = None
+
+    favorites_count = favorites.count()
+
+    return render(request, 'profile.html', {
+        'favorites': favorites,
+        'favorites_count': favorites_count
+    })
+
+#Koncerty
+@login_required
+def my_profile(request):
+    favorites = request.user.favorite_tracks.all().order_by('-release_date')
+    for news in favorites:
+        if news.spotify_link:
+            news.embed_link = news.spotify_link.replace('track/', 'embed/track/')
+        else:
+            news.embed_link = None
+
+    favorites_count = favorites.count()
+
+    # Concert reminder form
+    if request.method == 'POST':
+        form = ConcertReminderForm(request.POST)
+        if form.is_valid():
+            reminder = form.save(commit=False)
+            reminder.user = request.user
+            reminder.save()
+            return redirect('my_profile')
+    else:
+        form = ConcertReminderForm()
+
+    reminders = request.user.concert_reminders.all().order_by('concert_date')
+
+    return render(request, 'profile.html', {
+        'favorites': favorites,
+        'favorites_count': favorites_count,
+        'form': form,
+        'reminders': reminders
+    })
+
+#Slider vinylů
+
+def home(request):
+    vinyls = Vinyl.objects.all().order_by('-created_at')[:10] 
+    return render(request, "home.html", {"vinyls": vinyls})
