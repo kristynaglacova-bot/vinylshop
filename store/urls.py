@@ -35,4 +35,13 @@ urlpatterns =[
     #Nahled vinylu 
     path('vinyl/<int:pk>/', views.vinyl_detail, name='vinyl_detail'),
 
+    #Spotify
+    path('spotify-news/', views.spotify_news_view, name='spotify_news'),
+
+    #Oblibene
+    path('spotify-news/favorite/<int:news_id>/', views.toggle_favorite, name='toggle_favorite'),
+
+    #Profil 
+    path('profile/', views.my_profile, name='my_profile'),
+
  ]
