@@ -1,5 +1,3 @@
-print("MODELS LOADED ✅")
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Avg
@@ -69,3 +67,24 @@ class Order(models.Model):
         return f"Objednávka #{self.id} – {self.name}"
     
 
+class SpotifyNews(models.Model):
+    artist_name = models.CharField(max_length=100)
+    song_name = models.CharField(max_length=200, blank=True, null=True)
+    spotify_link = models.URLField(blank=True, null=True)
+    release_date = models.DateField()
+    favorited_by = models.ManyToManyField(User, related_name='favorite_tracks', blank=True)
+
+
+    def __str__(self):
+        return f"{self.artist_name} - {self.song_name}"
+    
+
+    #Koncerty
+    
+class ConcertReminder(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='concert_reminders')
+    artist_name = models.CharField(max_length=200)
+    concert_date = models.DateField()
+
+    def __str__(self):
+        return f"{self.artist_name} - {self.concert_date}"
