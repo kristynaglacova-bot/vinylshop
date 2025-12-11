@@ -2,11 +2,6 @@ from pathlib import Path
 import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-print("DEBUG STATIC ROOT")
-print("BASE_DIR:", BASE_DIR)
-print("STATIC_ROOT:", STATIC_ROOT)
-
 SECRET_KEY = 'django-insecure-l@sm*gmiymv_dj!a8+p&a$ai#59ymxb6+pi)^r5z+5fq$g)d(4'
 DEBUG = True
 
