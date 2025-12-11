@@ -2,27 +2,89 @@
 {% load static %}
 
 {% block content %}
-<div class="text-center">
-  <h1 class="mb-4">Vítej ve Vinyl Shopu! 🎶</h1>
+<div class="container mt-4">
+  <div class="row gy-4">
 
-  <div class="lead mx-auto" style="max-width: 700px;">
-    <p>Objevuj, nakupuj a prodávej vinylové poklady na jednom místě.</p>
+    <!-- LEVÁ STRANA -->
+    <div class="col-lg-6">
+      <h1 class="mb-3">Vítej ve Vinyl Shopu!</h1>
 
-    <p>Nejsme jen e-shop. Jsme také prostor, kde můžeš své vlastní desky nabídnout dál – jednoduše, 
-    bezpečně a bez zbytečných starostí. Stačí je nahrát, přidat popis a počkat na nového majitele.</p>
+      <p class="lead">Objevuj, nakupuj a prodávej vinylové poklady na jednom místě.</p>
+      <p>Vytvoř si účet, přidávej vlastní LP nebo sbírej alba ostatních.</p>
 
-    <p>Přidej se do komunity sběratelů, DJů, hudebních nadšenců i těch, kteří teprve objevují kouzlo gramofonu.</p>
+      {% if user.is_authenticated %}
+        <p class="mt-3">Jsi přihlášen jako <strong>{{ user.username }}</strong>.</p>
+        <a href="/vinyls/" class="btn btn-success me-2">Zobrazit vinyly</a>
+        <a href="/profile/" class="btn btn-outline-secondary">Můj profil</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary me-2">Přihlásit</a>
+        <a href="{% url 'register' %}" class="btn btn-outline-dark">Registrovat</a>
+      {% endif %}
+    </div>
+
+    <!-- PRAVÁ STRANA: SLIDER -->
+    <div class="col-lg-6">
+      <h3 class="text-center mb-3"> Novinky ve Vinyl Shopu</h3>
+
+      <div class="d-flex align-items-center">
+        <button id="sliderPrev" class="btn btn-dark btn-sm me-2">‹</button>
+
+        <div id="vinylSlider" style="overflow:hidden; width:100%;">
+          <div id="vinylTrack" style="display:flex; gap:16px; transition:transform 0.3s;">
+            {% for vinyl in vinyls %}
+              <a href="{% url 'vinyl_detail' vinyl.id %}" style="text-decoration:none; color:inherit;">
+                <div class="card text-center" style="min-width:150px; width:150px; border:none;">
+                  {% if vinyl.cover_image %}
+                    <img src="{{ vinyl.cover_image.url }}" class="rounded" style="width:150px; height:150px; object-fit:cover;">
+                  {% else %}
+                    <img src="{% static 'images/default_vinyl.jpg' %}" class="rounded" style="width:150px; height:150px; object-fit:cover;">
+                  {% endif %}
+                  <div class="p-1">
+                    <strong class="small">{{ vinyl.title }}</strong><br>
+                    <span class="text-muted small">{{ vinyl.artist }}</span>
+                  </div>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <button id="sliderNext" class="btn btn-dark btn-sm ms-2">›</button>
+      </div>
+    </div>
+
   </div>
-
-  {% if user.is_authenticated %}
-    <p class="mt-4">Jsi přihlášen jako <strong>{{ user.username }}</strong>!</p>
-    <a href="/vinyls/" class="btn btn-success mt-3">Zobrazit vinylové desky</a>
-  {% else %}
-    <p class="mb-4">Přihlaš se a vstup do komunity milovníků hudby.</p>
-    <a href="{% url 'login' %}" class="btn btn-primary">Přihlásit se</a>
-    <a href="{% url 'register' %}" class="btn btn-outline-light">Zaregistrovat se</a>
-  {% endif %}
 </div>
 
+<!-- SLIDER SCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const track = document.getElementById("vinylTrack");
+    const slider = document.getElementById("vinylSlider");
+    const prev = document.getElementById("sliderPrev");
+    const next = document.getElementById("sliderNext");
 
+    if (!track || !slider) return;
+
+    const cardStyle = track.querySelector('a')?.getBoundingClientRect();
+    const cardWidth = cardStyle ? cardStyle.width + 16 : 166; // šířka + gap
+    let index = 0;
+
+    function updateSlider() {
+        track.style.transform = `translateX(${-index * cardWidth}px)`;
+    }
+
+    prev.addEventListener("click", () => {
+        index = Math.max(0, index - 1);
+        updateSlider();
+    });
+
+    next.addEventListener("click", () => {
+        const visibleCards = Math.floor(slider.clientWidth / cardWidth);
+        const maxIndex = track.children.length - visibleCards;
+        index = Math.min(maxIndex, index + 1);
+        updateSlider();
+    });
+});
+</script>
 {% endblock %}

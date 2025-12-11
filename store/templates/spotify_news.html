@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Spotify News</h1>
+
+<!-- Dropdown pro řazení -->
+<form method="get" class="mb-3">
+    <label for="sortSelect">Seřadit podle:</label>
+    <select name="sort" id="sortSelect" onchange="this.form.submit()" class="form-select w-auto d-inline">
+        <option value="-release_date" {% if current_sort == '-release_date' %}selected{% endif %}>Od nejnovějších</option>
+        <option value="release_date" {% if current_sort == 'release_date' %}selected{% endif %}>Od nejstarších</option>
+    </select>
+</form>
+
+<!-- Tabulka novinek -->
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Umělec</th>
+            <th>Píseň</th>
+            <th>Datum vydání</th>
+            <th>Spotify</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for news in news_list %}
+        <tr>
+            <td>{{ news.artist_name }}</td>
+            <td>{{ news.song_name }}</td>
+            <td>{{ news.release_date }}</td>
+            <td>
+                {% if news.spotify_link %}
+                    <a href="{{ news.spotify_link }}" target="_blank">Odkaz na Spotify</a>
+                    <br>
+                    <iframe src="{{ news.embed_link }}" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    <form action="{% url 'toggle_favorite' news.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm {% if user in news.favorited_by.all %}btn-success{% else %}btn-outline-secondary{% endif %}">
+                            {% if user in news.favorited_by.all %}
+                                ❤️ V oblíbených
+                            {% else %}
+                                🤍 Přidat do oblíbených
+                            {% endif %}
+                        </button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Žádné novinky zatím nejsou.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

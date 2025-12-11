@@ -18,7 +18,9 @@
 
       {% if vinyl.tracklist %}
         <h5 class="mt-4">Tracklist</h5>
-        <pre class="bg-light p-3 rounded">{{ vinyl.tracklist }}</pre>
+        <pre class="bg-light p-3 rounded tracklist-box">
+  {{ vinyl.tracklist }}
+        </pre>
       {% endif %}
 
       <h4 class="mt-4">{{ vinyl.price }} Kč</h4>
